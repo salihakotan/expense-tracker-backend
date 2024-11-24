@@ -10,16 +10,20 @@ const JWT_SECRET = 'mysecretkey';
 // Kullanıcı oluştur (Register)
 router.post('/register', async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password,username } = req.body;
 
         // Aynı email adresine sahip kullanıcı kontrolü
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ error: 'Bu e-posta adresi zaten kullanılıyor.' });
+        const existingUser = await User.findOne({
+            $or: [
+                { email: req.body.email },
+                { username: req.body.username }
+            ]
+        });        if (existingUser) {
+            return res.status(400).json({ error: 'e-posta adresi veya kullanıcı adı zaten kullanılıyor.' });
         }
 
         // Yeni kullanıcı oluştur ve kaydet
-        const newUser = new User({ name, email, password });
+        const newUser = new User({ name, email, password,username });
         await newUser.save();
         res.status(201).json(newUser);
     } catch (err) {
