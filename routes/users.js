@@ -25,7 +25,7 @@ router.post('/register', async (req, res) => {
         // Yeni kullanıcı oluştur ve kaydet
         const newUser = new User({ name, email, password,username });
         await newUser.save();
-        res.status(201).json(newUser);
+        res.status(201).json({message:"register successful"});
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -67,6 +67,9 @@ router.post('/login', async (req, res) => {
 
         res.status(200).json({
             message: 'Giriş başarılı.',
+            username:user.username,
+            email:user.email,
+            full_name:user.name,
             token
         });
     } catch (err) {
