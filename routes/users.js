@@ -44,10 +44,10 @@ router.get('/', async (req, res) => {
 // Kullanıcı girişi (Login)
 router.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { username, password } = req.body;
 
         // Kullanıcıyı e-posta ile bul
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ username });
         if (!user) {
             return res.status(404).json({ error: 'Kullanıcı bulunamadı.' });
         }
@@ -60,7 +60,7 @@ router.post('/login', async (req, res) => {
 
         // JWT Token oluştur
         const token = jwt.sign(
-            { id: user._id, email: user.email },
+            { id: user._id, username: user.username },
             JWT_SECRET,
             { expiresIn: '1h' } // Token geçerlilik süresi
         );
