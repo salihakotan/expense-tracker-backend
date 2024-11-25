@@ -5,8 +5,8 @@ const Category = require('../models/Category');
 // Yeni kategori oluştur
 router.post('/', async (req, res) => {
     try {
-        const { name, color } = req.body;
-        const newCategory = new Category({ name, color });
+        const { name,type, color } = req.body;
+        const newCategory = new Category({ name,type, color });
         await newCategory.save();
         res.status(201).json(newCategory);
     } catch (err) {
@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
     try {
         const categories = await Category.find();
         res.json(categories);
-    } catch (err) {
+    } catch (err) { 
         res.status(500).json({ error: err.message });
     }
 });

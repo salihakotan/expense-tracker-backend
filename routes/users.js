@@ -6,31 +6,40 @@ const User = require('../models/User');
 
 // JWT Secret (Daha güvenli bir kullanım için .env dosyasına taşıyın)
 const JWT_SECRET = 'mysecretkey';
-
-// Kullanıcı oluştur (Register)
 router.post('/register', async (req, res) => {
     try {
-        const { full_name, email, password,username } = req.body;
+        const { full_name, email, password, username } = req.body;
 
-        // Aynı email adresine sahip kullanıcı kontrolü
+        // Aynı email veya kullanıcı adına sahip kullanıcı kontrolü
         const existingUser = await User.findOne({
             $or: [
-                { email: req.body.email },
-                { username: req.body.username }
+                { email: email },
+                { username: username }
             ]
-        });        if (existingUser) {
+        });
+
+        if (existingUser) {
             return res.status(400).json({ error: 'e-posta adresi veya kullanıcı adı zaten kullanılıyor.' });
         }
 
+        // Şifreyi hash'le
+        const saltRounds = 10; // Güçlü hash için tavsiye edilen salt sayısı
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
         // Yeni kullanıcı oluştur ve kaydet
-        const newUser = new User({ full_name, email, password,username });
+        const newUser = new User({
+            full_name,
+            email,
+            password: hashedPassword, // Hash'lenmiş şifreyi kaydedin
+            username
+        });
+
         await newUser.save();
-        res.status(201).json({message:"register successful"});
+        res.status(201).json({ message: "Kayıt başarılı!" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
-
 // Tüm kullanıcıları getir (örnek için)
 router.get('/', async (req, res) => {
     try {
