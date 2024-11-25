@@ -10,7 +10,7 @@ const JWT_SECRET = 'mysecretkey';
 // Kullanıcı oluştur (Register)
 router.post('/register', async (req, res) => {
     try {
-        const { name, email, password,username } = req.body;
+        const { full_name, email, password,username } = req.body;
 
         // Aynı email adresine sahip kullanıcı kontrolü
         const existingUser = await User.findOne({
@@ -23,7 +23,7 @@ router.post('/register', async (req, res) => {
         }
 
         // Yeni kullanıcı oluştur ve kaydet
-        const newUser = new User({ name, email, password,username });
+        const newUser = new User({ full_name, email, password,username });
         await newUser.save();
         res.status(201).json({message:"register successful"});
     } catch (err) {
@@ -69,7 +69,7 @@ router.post('/login', async (req, res) => {
             message: 'Giriş başarılı.',
             username:user.username,
             email:user.email,
-            full_name:user.name,
+            full_name:user.full_name,
             token
         });
     } catch (err) {
