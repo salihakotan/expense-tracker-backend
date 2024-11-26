@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
 // Tüm kategorileri getir
 router.get('/', async (req, res) => {
     try {
-        const categories = await Category.find();
+        const categories = await Category.find().sort({ updatedAt: -1 });
         res.json(categories);
     } catch (err) {
         res.status(500).json({ error: err.message });
