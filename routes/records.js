@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
         // Kayıt bilgilerini doldur
         const populatedRecord = await Record.findById(newRecord._id).populate({
             path: 'category_id',
-            select: 'name color', // Gerekli alanları seç
+            select: 'name color type', // Gerekli alanları seç
         });
 
         res.status(201).json({
@@ -41,7 +41,7 @@ router.get('/:userId', async (req, res) => {
     try {
         const records = await Record.find({ userId: req.params.userId }).populate({
             path: 'category_id',
-            select: 'name color',
+            select: 'name color type',
         });
 
         // category_id'den category alanını doldur
@@ -61,7 +61,7 @@ router.get('/', async (req, res) => {
     try {
         const records = await Record.find().populate({
             path: 'category_id',
-            select: 'name color',
+            select: 'name color type',
         }).sort({ updatedAt: -1 });
 
         // category_id'den category alanını doldur
@@ -87,7 +87,7 @@ router.put('/:id', async (req, res) => {
             { new: true } // Güncellenmiş belgeyi döndür
         ).populate({
             path: 'category_id',
-            select: 'name color',
+            select: 'name color type',
         });
 
         if (!updatedRecord) {
